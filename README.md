@@ -74,7 +74,7 @@ mots-clés de domaine (`highlight_keywords`), `only_highlighted: true` pour ne r
 
 1. Secrets (**Settings → Secrets and variables → Actions**) : `TELEGRAM_BOT_TOKEN`,
    `TELEGRAM_CHAT_ID`, et en option `ADZUNA_APP_ID` / `ADZUNA_APP_KEY`, `ANTHROPIC_API_KEY`.
-2. Variable de dépôt `JOBBOT_ENABLED` = `true` pour activer les passages planifiés.
+2. Active les passages planifiés en décommentant le bloc `schedule` de `.github/workflows/jobbot.yml`.
 3. Le planificateur de GitHub peut sauter des passages : pour un déclenchement fiable, un service
    comme cron-job.org peut appeler l'API `workflow_dispatch` toutes les 30 minutes.
 
