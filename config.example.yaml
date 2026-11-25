@@ -1,0 +1,130 @@
+# Configuration d'exemple (domaine : informatique, data, IA, cybersécurité).
+# Copie ce fichier en config.yaml pour le personnaliser (sinon celui-ci est utilisé).
+
+# Villes autour desquelles chercher
+locations:
+  - Lausanne
+  - Neuchâtel
+  - Fribourg
+
+# Rayon de recherche en km (utilisé par LinkedIn et Adzuna)
+radius_km: 25
+
+# Termes envoyés aux moteurs de recherche des sites
+search_terms:
+  - stage
+  - stagiaire
+  - internship
+  - Praktikum
+
+# Une offre n'est retenue que si son TITRE correspond à au moins une de ces
+# expressions régulières (insensible à la casse et aux accents).
+title_must_match:
+  - '\bstag(e|es|iaire|iaires)\b'
+  - '\bintern(s|ship|ships)?\b'
+  - '\bpraktik'
+  - '\btrainee\b'
+  - '\bwerkstudent'
+
+# Les offres dont le titre contient un de ces mots sont ignorées
+exclude_keywords:
+  - apprentissage
+  - apprenti
+  - lehrstelle
+  - lehre
+  - '3+1'            # stages de maturité professionnelle commerciale
+  - mpc
+  - pre-heg
+  # Pour ignorer les offres en allemand, ajoute : praktikum, praktikant, werkstudent, m/w/d
+
+# Mots-clés de ton domaine, cherchés comme MOTS ENTIERS dans le titre
+# (sans tenir compte des accents ni des majuscules).
+# Un * final = « commence par » : informati* → informatique, informaticien.
+highlight_keywords:
+  # IA
+  - IA
+  - AI
+  - KI                # künstliche Intelligenz
+  - intelligence artificielle
+  - artificial intelligence
+  - machine learning
+  - deep learning
+  - ML
+  - LLM*
+  - GenAI
+  - computer vision
+  # Data
+  - data*             # data, Datascience, Database
+  - données
+  - daten*
+  - big data
+  - analytics
+  # IT / informatique
+  - IT
+  - ICT
+  - informati*        # informatique, informaticien, Informatik
+  - computer science
+  - software*         # software, Software Engineer
+  - logiciel*
+  - cloud
+  - cyber*            # cybersécurité, cybersecurity
+  - devops
+  - devsecops
+  # Sécurité / systèmes / réseaux
+  - sécurité
+  - security
+  - sicherheit*
+  - SOC
+  - pentest*
+  - réseau*
+  - network*
+  - linux
+  - système*          # systèmes d'information, ingénieur système
+  - system engineer*
+  - infrastructure
+  - python
+  - C++
+  # Développement
+  - développeu*       # développeur, développeuse
+  - developer*
+  - entwickl*         # Entwickler, Softwareentwicklung
+  - development
+  - développement
+  - programm*         # programmeur, programming, Programmierer
+  - full stack
+  - fullstack
+  - backend
+  - back-end
+  - frontend
+  - front-end
+  - web
+
+# Uniquement les offres de ton domaine
+only_highlighted: true
+
+# Sources activées
+sources:
+  jobup: true      # jobup.ch (Suisse romande)
+  jobs_ch: true    # jobs.ch (offres en allemand filtrées plus haut)
+  linkedin: false  # offres publiques LinkedIn (sans compte) : désactivé par défaut, voir README
+  adzuna: true     # ignoré si ADZUNA_APP_ID / ADZUNA_APP_KEY ne sont pas définis
+
+# Ignorer les offres publiées il y a plus de N jours (quand la date est connue)
+max_age_days: 14
+
+# Nombre max de notifications par exécution (anti-spam)
+max_notifications_per_run: 30
+
+# Intervalle entre deux recherches en mode boucle (minutes)
+interval_minutes: 30
+
+# Fichier SQLite qui mémorise les offres déjà envoyées
+database: data/jobbot.db
+
+# --- Conseils CV / lettres de motivation (boutons sous chaque offre) ---
+# Ton CV (PDF ou texte), à la racine du repo. Le repo doit rester PRIVÉ.
+cv_path: cv.pdf
+# Profil détaillé (projets, chiffres, parcours), envoyé avec le CV : voir profil.example.md
+profile_path: profil.md
+# Modèle Claude utilisé (nécessite le secret ANTHROPIC_API_KEY)
+claude_model: claude-opus-5-5

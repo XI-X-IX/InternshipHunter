@@ -1,0 +1,51 @@
+name: JobBot
+
+on:
+  schedule:
+    # Toutes les 30 min (à hh:07 et hh:37), de 5h à 21h UTC = 6h à 22h en Suisse (hiver).
+    # On évite :00 et :30, souvent retardés par GitHub.
+    - cron: "7,37 5-21 * * *"
+  workflow_dispatch: {}         # bouton « Run workflow » pour lancer à la main
+
+concurrency:
+  group: jobbot
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    # Les passages planifiés ne tournent que si la variable de dépôt JOBBOT_ENABLED vaut "true"
+    # (Settings → Secrets and variables → Actions → Variables). Le bouton « Run workflow » marche toujours.
+    if: github.event_name == 'workflow_dispatch' || vars.JOBBOT_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      # La base des offres déjà envoyées est conservée entre deux exécutions
+      - uses: actions/cache/restore@v4
+        with:
+          path: data/jobbot.db
+          key: jobbot-db-${{ github.run_id }}
+          restore-keys: jobbot-db-
+
+      - name: Chercher les stages
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m jobbot --once
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: data/jobbot.db
+          key: jobbot-db-${{ github.run_id }}
