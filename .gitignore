@@ -222,7 +222,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# JobBot
+# InternshipHunter
 data/*.db
 
 # Données personnelles : ne jamais les publier

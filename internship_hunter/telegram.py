@@ -28,7 +28,7 @@ class Telegram:
         if chat_id == token.split(":", 1)[0]:
             raise ValueError(
                 "TELEGRAM_CHAT_ID est l'identifiant du bot lui-même (le début du token). "
-                "Il faut TON identifiant : lance `python -m jobbot --get-chat-id` ou "
+                "Il faut TON identifiant : lance `python -m internship_hunter --get-chat-id` ou "
                 "ouvre https://api.telegram.org/bot<TOKEN>/getUpdates (voir README)."
             )
         self.token = token

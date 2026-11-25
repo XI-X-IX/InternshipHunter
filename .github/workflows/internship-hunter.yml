@@ -1,4 +1,4 @@
-name: JobBot
+name: InternshipHunter
 
 on:
   # Planification désactivée dans ce dépôt vitrine. Dans ta copie privée, décommente ces 3 lignes :
@@ -8,7 +8,7 @@ on:
   workflow_dispatch: {}         # bouton « Run workflow » pour lancer à la main
 
 concurrency:
-  group: jobbot
+  group: internship-hunter
   cancel-in-progress: false
 
 jobs:
@@ -28,9 +28,9 @@ jobs:
       # La base des offres déjà envoyées est conservée entre deux exécutions
       - uses: actions/cache/restore@v4
         with:
-          path: data/jobbot.db
-          key: jobbot-db-${{ github.run_id }}
-          restore-keys: jobbot-db-
+          path: data/internship_hunter.db
+          key: internship-hunter-db-${{ github.run_id }}
+          restore-keys: internship-hunter-db-
 
       - name: Chercher les stages
         env:
@@ -39,10 +39,10 @@ jobs:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python -m jobbot --once
+        run: python -m internship_hunter --once
 
       - uses: actions/cache/save@v4
         if: always()
         with:
-          path: data/jobbot.db
-          key: jobbot-db-${{ github.run_id }}
+          path: data/internship_hunter.db
+          key: internship-hunter-db-${{ github.run_id }}

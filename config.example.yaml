@@ -119,7 +119,7 @@ max_notifications_per_run: 30
 interval_minutes: 30
 
 # Fichier SQLite qui mémorise les offres déjà envoyées
-database: data/jobbot.db
+database: data/internship_hunter.db
 
 # --- Conseils CV / lettres de motivation (boutons sous chaque offre) ---
 # Ton CV (PDF ou texte), à la racine du repo. Le repo doit rester PRIVÉ.

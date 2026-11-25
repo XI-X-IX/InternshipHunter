@@ -35,7 +35,7 @@ class Config:
     max_age_days: int = 14
     max_notifications_per_run: int = 30
     interval_minutes: int = 30
-    database: str = "data/jobbot.db"
+    database: str = "data/internship_hunter.db"
     cv_path: str = "cv.pdf"
     profile_path: str = "profil.md"
     claude_model: str = "claude-opus-5-5"

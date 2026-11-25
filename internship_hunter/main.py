@@ -15,7 +15,7 @@ from .details import fetch_description
 from .storage import Storage
 from .telegram import Telegram, format_job, get_chat_ids, job_buttons
 
-log = logging.getLogger("jobbot")
+log = logging.getLogger("internship_hunter")
 
 
 def collect(cfg: Config) -> tuple[list[Job], list[str], list[str]]:
@@ -156,7 +156,7 @@ def run_once(cfg: Config, *, dry_run: bool = False, seed: bool = False) -> int:
             return 0
 
         if failed and not ok:
-            tg.send("⚠️ JobBot : toutes les sources ont échoué (" + ", ".join(failed) + "). Vérifie les logs.")
+            tg.send("⚠️ InternshipHunter : toutes les sources ont échoué (" + ", ".join(failed) + "). Vérifie les logs.")
             return 1
 
         to_send = new[: cfg.max_notifications_per_run]
@@ -174,7 +174,7 @@ def run_once(cfg: Config, *, dry_run: bool = False, seed: bool = False) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="jobbot",
+        prog="internship_hunter",
         description="Cherche des stages autour de Lausanne, Neuchâtel et Fribourg et notifie sur Telegram.",
     )
     parser.add_argument("--config", help="chemin du fichier de configuration YAML")
@@ -206,7 +206,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.test:
         Telegram(cfg.telegram_token, cfg.telegram_chat_id).send(
-            "✅ JobBot est bien connecté ! Tu recevras ici les nouvelles offres de stage autour de "
+            "✅ InternshipHunter est bien connecté ! Tu recevras ici les nouvelles offres de stage autour de "
             + ", ".join(cfg.locations) + "."
         )
         log.info("Message de test envoyé")

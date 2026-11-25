@@ -5,12 +5,12 @@ from unittest import mock
 
 import pytest
 
-from jobbot import main as jm
-from jobbot.config import load_config
-from jobbot.filters import JobFilter
-from jobbot.models import Job
-from jobbot.sources import adzuna, jobcloud, linkedin
-from jobbot.telegram import format_job
+from internship_hunter import main as jm
+from internship_hunter.config import load_config
+from internship_hunter.filters import JobFilter
+from internship_hunter.models import Job
+from internship_hunter.sources import adzuna, jobcloud, linkedin
+from internship_hunter.telegram import format_job
 
 FIX = Path(__file__).parent / "fixtures"
 
@@ -139,7 +139,7 @@ def test_skipped_adzuna_does_not_count_as_ok(cfg):
 
 
 def test_rejects_bot_own_id_as_chat_id():
-    from jobbot.telegram import Telegram
+    from internship_hunter.telegram import Telegram
     with pytest.raises(ValueError, match="bot lui-même"):
         Telegram("123456789:AAAA", "123456789")
 
@@ -187,7 +187,7 @@ def _click(update_id, data, chat_id="42", message_id=7):
 
 
 def test_buttons_fit_telegram_limit():
-    from jobbot.telegram import job_buttons
+    from internship_hunter.telegram import job_buttons
     job = Job("jobs_ch", "85b1adb1-5414-4a0e-918b-8e82e60a884d", "Stage", "", "", "u")
     for b in job_buttons(job)[0]:
         assert len(b["callback_data"].encode()) <= 64
@@ -195,7 +195,7 @@ def test_buttons_fit_telegram_limit():
 
 
 def test_handle_requests(cfg):
-    from jobbot.storage import Storage
+    from internship_hunter.storage import Storage
     cfg.anthropic_api_key = "sk-test"
     st = Storage(cfg.database_path)
     st.mark_seen(Job("jobup", "abc", "Stage Data", "Assura", "Lausanne", "https://x"))
@@ -223,7 +223,7 @@ def test_handle_requests(cfg):
 
 
 def test_missing_key_or_cv_gives_clear_message(cfg, tmp_path):
-    from jobbot.assistant import AssistantError, generate
+    from internship_hunter.assistant import AssistantError, generate
     cfg.anthropic_api_key = ""
     with pytest.raises(AssistantError, match="ANTHROPIC_API_KEY"):
         generate(cfg, "cv", "Stage", "X", "Y", "desc")
@@ -233,7 +233,7 @@ def test_missing_key_or_cv_gives_clear_message(cfg, tmp_path):
 
 
 def test_generate_sends_cv_pdf_and_offer(cfg, tmp_path):
-    from jobbot import assistant
+    from internship_hunter import assistant
     pdf = tmp_path / "cv.pdf"
     pdf.write_bytes(b"%PDF-1.4 fake")
     profile = tmp_path / "profil.md"
@@ -257,7 +257,7 @@ def test_generate_sends_cv_pdf_and_offer(cfg, tmp_path):
 
 
 def test_split_text():
-    from jobbot.telegram import split_text
+    from internship_hunter.telegram import split_text
     parts = split_text(("ligne\n" * 2000), limit=4000)
     assert all(len(p) <= 4000 for p in parts) and "".join(parts).count("ligne") == 2000
 
@@ -280,7 +280,7 @@ def test_security_keywords(title, expected):
 
 
 def test_copy_paste_mode_without_api_key(cfg):
-    from jobbot.storage import Storage
+    from internship_hunter.storage import Storage
     cfg.anthropic_api_key = ""
     st = Storage(cfg.database_path)
     st.mark_seen(Job("linkedin", "123", "Stage Data & IA", "SQLI", "Lausanne", "https://x"))
@@ -301,7 +301,7 @@ def test_copy_paste_mode_without_api_key(cfg):
 
 
 def test_send_copyable_escapes_and_splits():
-    from jobbot.telegram import Telegram
+    from internship_hunter.telegram import Telegram
     tg = Telegram("tok", "42")
     calls = []
     with mock.patch.object(tg, "_call", lambda m, **p: calls.append(p)), mock.patch("time.sleep"):
@@ -312,7 +312,7 @@ def test_send_copyable_escapes_and_splits():
 
 
 def test_cv_task_includes_ats_and_copy_prompt_carries_it():
-    from jobbot.assistant import manual_prompt
+    from internship_hunter.assistant import manual_prompt
     prompt = manual_prompt("cv", "Stage DevOps", "X", "Lausanne", "Docker, Kubernetes")
     assert "Passage ATS (estimation)" in prompt and "/100" in prompt
     assert "ATS" not in manual_prompt("lt", "Stage DevOps", "X", "Lausanne", "Docker")

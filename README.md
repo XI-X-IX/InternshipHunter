@@ -31,7 +31,7 @@ générés par Claude à partir de ton CV. Tourne gratuitement sur **GitHub Acti
 ## Architecture
 
 ```
-GitHub Actions (cron) ──► python -m jobbot --once
+GitHub Actions (cron) ──► python -m internship_hunter --once
                             │
                             ├─ 1. clics Telegram depuis le dernier passage (getUpdates)
                             │     └─ texte complet de l'annonce ─► Claude (CV + profil) ─► réponse
@@ -43,12 +43,12 @@ GitHub Actions (cron) ──► python -m jobbot --once
 
 | Module | Rôle |
 |---|---|
-| `jobbot/sources/` | un module par site (jobup / jobs.ch, LinkedIn, Adzuna) |
-| `jobbot/filters.py` | filtre stage, exclusions, mots-clés de domaine, âge des offres |
-| `jobbot/details.py` | texte complet d'une annonce |
-| `jobbot/assistant.py` | prompts et appel à l'API Claude (CV en PDF, mise en cache) |
-| `jobbot/telegram.py` | messages, boutons, découpage sous la limite de 4096 caractères |
-| `jobbot/storage.py` | SQLite : offres vues, offset Telegram, demandes traitées |
+| `internship_hunter/sources/` | un module par site (jobup / jobs.ch, LinkedIn, Adzuna) |
+| `internship_hunter/filters.py` | filtre stage, exclusions, mots-clés de domaine, âge des offres |
+| `internship_hunter/details.py` | texte complet d'une annonce |
+| `internship_hunter/assistant.py` | prompts et appel à l'API Claude (CV en PDF, mise en cache) |
+| `internship_hunter/telegram.py` | messages, boutons, découpage sous la limite de 4096 caractères |
+| `internship_hunter/storage.py` | SQLite : offres vues, offset Telegram, demandes traitées |
 
 ## Installation
 
@@ -57,11 +57,11 @@ Il faut Python 3.10+ et un bot Telegram (envoie `/newbot` à **@BotFather**, pui
 ```bash
 git clone https://github.com/XI-X-IX/InternshipHunter.git && cd InternshipHunter
 pip install -r requirements.txt
-cp .env.example .env                 # mets ton TELEGRAM_BOT_TOKEN
-python -m jobbot --get-chat-id       # copie le TELEGRAM_CHAT_ID affiché dans .env
-python -m jobbot --test              # message de test sur Telegram
-python -m jobbot --dry-run           # affiche les offres trouvées, sans rien envoyer
-python -m jobbot                     # recherche toutes les 30 minutes
+cp .env.example .env                         # mets ton TELEGRAM_BOT_TOKEN
+python -m internship_hunter --get-chat-id    # copie le TELEGRAM_CHAT_ID affiché dans .env
+python -m internship_hunter --test           # message de test sur Telegram
+python -m internship_hunter --dry-run        # affiche les offres trouvées, sans rien envoyer
+python -m internship_hunter                  # recherche toutes les 30 minutes
 ```
 
 Personnalise ta recherche en copiant `config.example.yaml` en `config.yaml` : villes, rayon,
@@ -74,7 +74,7 @@ mots-clés de domaine (`highlight_keywords`), `only_highlighted: true` pour ne r
 
 1. Secrets (**Settings → Secrets and variables → Actions**) : `TELEGRAM_BOT_TOKEN`,
    `TELEGRAM_CHAT_ID`, et en option `ADZUNA_APP_ID` / `ADZUNA_APP_KEY`, `ANTHROPIC_API_KEY`.
-2. Active les passages planifiés en décommentant le bloc `schedule` de `.github/workflows/jobbot.yml`.
+2. Active les passages planifiés en décommentant le bloc `schedule` de `.github/workflows/internship-hunter.yml`.
 3. Le planificateur de GitHub peut sauter des passages : pour un déclenchement fiable, un service
    comme cron-job.org peut appeler l'API `workflow_dispatch` toutes les 30 minutes.
 
